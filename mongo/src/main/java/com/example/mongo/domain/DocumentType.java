@@ -22,6 +22,7 @@ public class DocumentType {
 	public void setPropertyDefinitions(Map<String, String> propertyDefinitions) {
 		this.propertyDefinitions = propertyDefinitions;
 	}
+
 	@Override
 	public String toString() {
 		return "DocumentType [typeName=" + typeName + "]";

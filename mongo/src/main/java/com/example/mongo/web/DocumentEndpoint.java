@@ -28,16 +28,13 @@ public class DocumentEndpoint {
 
 	@GetMapping("/document/getByVersionSeriesId/{versionSeriesId}")
 	public Flux<Document> getByVersionSeriesId(String versionSeriesId) {
-		return documentRepo.findByVersionSeriesId(versionSeriesId);
+		return documentRepo.findByVersionSeriesIdOrderByCreationDate(versionSeriesId);
 	}
 
 	@GetMapping("/document/getLastByVersionSeriesId/{versionSeriesId}")
 	public Mono<Document> getLastByVersionSeriesId(String versionSeriesId) {
 		return documentRepo
-				.findByVersionSeriesId(versionSeriesId)
-				.sort((d1, d2) -> {
-						int major = d1.getMajorVersion().compareTo(d2.getMajorVersion());
-						return (major == 0) ? d1.getMinorVersion().compareTo(d2.getMinorVersion()) : major;})
+				.findByVersionSeriesIdOrderByCreationDate(versionSeriesId)
 				.last();
 	}
 }

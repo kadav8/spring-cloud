@@ -6,5 +6,4 @@ import com.example.mongo.domain.DocumentType;
 
 public interface DocumentTypeRepository extends ReactiveCrudRepository<DocumentType, String> {
 
-
 }

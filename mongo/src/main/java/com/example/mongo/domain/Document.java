@@ -10,17 +10,15 @@ public class Document {
 
 	@Id
 	private String documentId;
-	private String VersionSeriesId;
+	private String versionSeriesId;
 	@Version
 	private Long version;
 	private Boolean isCheckedOut;
-	private String dataType;
-	private Integer minorVersion;
-	private Integer majorVersion;
+	private String type;
 	private Date creationDate;
-	private Date lastModifiedDate;
 	private String creatorName;
-	private String lastModifierName;
+	private Date lastModificationDate;
+	private String modifierName;
 
 	private Map<String, String> stringProperties;
 	private Map<String, Long> longProperties;
@@ -34,10 +32,10 @@ public class Document {
 		this.documentId = documentId;
 	}
 	public String getVersionSeriesId() {
-		return VersionSeriesId;
+		return versionSeriesId;
 	}
 	public void setVersionSeriesId(String versionSeriesId) {
-		VersionSeriesId = versionSeriesId;
+		this.versionSeriesId = versionSeriesId;
 	}
 	public Long getVersion() {
 		return version;
@@ -51,23 +49,11 @@ public class Document {
 	public void setIsCheckedOut(Boolean isCheckedOut) {
 		this.isCheckedOut = isCheckedOut;
 	}
-	public String getDataType() {
-		return dataType;
+	public String getType() {
+		return type;
 	}
-	public void setDataType(String dataType) {
-		this.dataType = dataType;
-	}
-	public Integer getMinorVersion() {
-		return minorVersion;
-	}
-	public void setMinorVersion(Integer minorVersion) {
-		this.minorVersion = minorVersion;
-	}
-	public Integer getMajorVersion() {
-		return majorVersion;
-	}
-	public void setMajorVersion(Integer majorVersion) {
-		this.majorVersion = majorVersion;
+	public void setType(String type) {
+		this.type = type;
 	}
 	public Date getCreationDate() {
 		return creationDate;
@@ -75,23 +61,23 @@ public class Document {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
-	public Date getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-	public void setLastModifiedDate(Date lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
 	public String getCreatorName() {
 		return creatorName;
 	}
 	public void setCreatorName(String creatorName) {
 		this.creatorName = creatorName;
 	}
-	public String getLastModifierName() {
-		return lastModifierName;
+	public Date getLastModificationDate() {
+		return lastModificationDate;
 	}
-	public void setLastModifierName(String lastModifierName) {
-		this.lastModifierName = lastModifierName;
+	public void setLastModificationDate(Date lastModificationDate) {
+		this.lastModificationDate = lastModificationDate;
+	}
+	public String getModifierName() {
+		return modifierName;
+	}
+	public void setModifierName(String modifierName) {
+		this.modifierName = modifierName;
 	}
 	public Map<String, String> getStringProperties() {
 		return stringProperties;
@@ -117,9 +103,9 @@ public class Document {
 	public void setDateProperties(Map<String, Date> dateProperties) {
 		this.dateProperties = dateProperties;
 	}
+
 	@Override
 	public String toString() {
-		return "Document [documentId=" + documentId + ", VersionSeriesId=" + VersionSeriesId + ", minorVersion="
-				+ minorVersion + ", majorVersion=" + majorVersion + "]";
+		return "Document [documentId=" + documentId + ", versionSeriesId=" + versionSeriesId + ", type=" + type + "]";
 	}
 }

@@ -8,6 +8,5 @@ import reactor.core.publisher.Flux;
 
 public interface DocumentRepository extends ReactiveCrudRepository<Document, String> {
 
-	public Flux<Document> findByVersionSeriesId(String versionSeriesId);
-
+	public Flux<Document> findByVersionSeriesIdOrderByCreationDate(String versionSeriesId);
 }

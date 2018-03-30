@@ -22,6 +22,8 @@ import com.example.mongo.service.DocumentSavingService;
 @SpringBootTest
 public class MongoApplicationTests {
 
+	private boolean cleaningAllBefore = true;
+
 	@Autowired
 	private DocumentRepository documentRepository;
 	@Autowired
@@ -31,6 +33,10 @@ public class MongoApplicationTests {
 
 	@Test
 	public void saveDocuments() {
+		if(cleaningAllBefore) {
+			documentRepository.deleteAll().block();
+		}
+
 		if(!documentTypeRepository.existsById("SimpleDocument").block()) {
 			DocumentType documentType = new DocumentType();
 			documentType.setTypeName("SimpleDocument");
@@ -40,17 +46,51 @@ public class MongoApplicationTests {
 			documentTypeRepository.save(documentType).block();
 		}
 
-		String id = UUID.randomUUID().toString();
 		String vid = UUID.randomUUID().toString();
-		Document document = new Document();
-		document.setDocumentId(id);
-		document.setVersionSeriesId(vid);
-		document.setDataType("SimpleDocument");
-		Map<String, String> sp = new HashMap<>();
-		sp.put("ClientNumber", "alma12");
-		document.setStringProperties(sp);
-		documentSavingService.saveDocument(document).block();
 
-		assertNotNull(documentRepository.findById(id).block());
+		for(int i = 0; i < 1; i++) {
+			String id = UUID.randomUUID().toString();
+			Document document = new Document();
+			document.setDocumentId(id);
+			document.setVersionSeriesId(vid);
+			document.setType("SimpleDocument");
+			Map<String, String> sp = new HashMap<>();
+			sp.put("ClientNumber", "eper" + i);
+			document.setStringProperties(sp);
+			documentSavingService.storeDocument(document).block();
+			assertNotNull(documentRepository.findById(id).block());
+		}
+
+		vid = UUID.randomUUID().toString();
+
+		for(int i = 0; i < 2; i++) {
+			String id = UUID.randomUUID().toString();
+			Document document = new Document();
+			document.setDocumentId(id);
+			document.setVersionSeriesId(vid);
+			document.setType("SimpleDocument");
+			Map<String, String> sp = new HashMap<>();
+			sp.put("ClientNumber", "barack" + i);
+			document.setStringProperties(sp);
+			documentSavingService.storeDocument(document).block();
+			assertNotNull(documentRepository.findById(id).block());
+		}
+
+		vid = UUID.randomUUID().toString();
+
+		for(int i = 0; i < 3; i++) {
+			String id = UUID.randomUUID().toString();
+			Document document = new Document();
+			document.setDocumentId(id);
+			document.setVersionSeriesId(vid);
+			document.setType("SimpleDocument");
+			Map<String, String> sp = new HashMap<>();
+			sp.put("ClientNumber", "alma" + i);
+			document.setStringProperties(sp);
+			documentSavingService.storeDocument(document).block();
+			assertNotNull(documentRepository.findById(id).block());
+		}
+
+		System.out.println(documentRepository.findByVersionSeriesIdOrderByCreationDate(vid).last().block());
 	}
 }
