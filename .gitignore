@@ -1,3 +1,13 @@
 *.iml
+
 .idea/
+
 *target*
+
+/.metadata/
+
+.project
+.classpath
+.settings/
+
+*application-home.properties
