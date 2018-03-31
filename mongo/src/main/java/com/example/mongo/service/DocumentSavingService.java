@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class DocumentSavingService {
-	Logger LOG = LoggerFactory.getLogger(DocumentSavingService.class);
+	private Logger LOG = LoggerFactory.getLogger(DocumentSavingService.class);
 
 	@Autowired
 	private DocumentRepository documentRepository;
