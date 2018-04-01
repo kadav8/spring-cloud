@@ -10,4 +10,4 @@
 .classpath
 .settings/
 
-*home.properties
+.env
