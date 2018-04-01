@@ -6,7 +6,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -22,51 +21,46 @@ import reactor.core.publisher.Mono;
 public class DocumentSavingService {
 	private Logger LOG = LoggerFactory.getLogger(DocumentSavingService.class);
 
-	@Autowired
-	private DocumentRepository documentRepository;
-	@Autowired
-	private DocumentTypeRepository documentTypeRepository;
+	private final DocumentRepository documentRepository;
+	private final DocumentTypeRepository documentTypeRepository;
 
-	public Mono<Document> storeDocument(Document document) {
+	public DocumentSavingService(DocumentRepository documentRepository, DocumentTypeRepository documentTypeRepository) {
+		this.documentRepository = documentRepository;
+		this.documentTypeRepository = documentTypeRepository;
+	}
+
+	public Mono<Document> storeDocument(final Document document) {
 		return saveDocument(document, Versioning.NEW);
 	}
-
-	public Mono<Document> updateDocument(Document document) {
+	public Mono<Document> updateDocument(final Document document) {
 		return saveDocument(document, Versioning.UPDATE);
 	}
-
-	public Mono<Document> updateSameDocument(Document document) {
+	public Mono<Document> updateSameDocument(final Document document) {
 		return saveDocument(document, Versioning.SAME);
 	}
 
-	private Mono<Document> saveDocument(Document document, Versioning versioning) {
+	private Mono<Document> saveDocument(final Document document, final Versioning versioning) {
 		LOG.debug("Save: {}", document);
-
-		Mono<DocumentType> documentTypePublisher = documentTypeRepository
+		return documentTypeRepository
 				.findById(document.getType())
 				.doOnError(t -> LOG.error("Save document failed", t))
-				.doOnSuccess(documentType -> {
-					LOG.debug("DocumentType found: {}", documentType);
-					if(documentType == null) {
-						throw new RuntimeException("DocumentType not exists: " + document.getType());
-					}
-				});
-
-		Mono<Document> documentPublisher = documentTypePublisher
-				.flatMap(documentType -> {
-					LOG.debug("Check properties for DocumentType: {}", document.getType());
-					checkTypes(document.getStringProperties(), documentType, "string");
-					checkTypes(document.getLongProperties(), documentType, "long");
-					checkTypes(document.getDoubleProperties(), documentType, "double");
-					checkTypes(document.getDateProperties(), documentType, "date");
-					setDefaultsAndDoVersioning(document, versioning);
-					return documentRepository.save(document);
-				});
-
-		return documentPublisher;
+				.doOnSuccess(documentType -> checkDocumentType(documentType, document))
+				.map(documentType -> getSaveableDocument(document, versioning))
+				.flatMap(saveableDocument -> documentRepository.save(saveableDocument));
 	}
 
-	private void checkTypes(Map<String, ?> properties, DocumentType documentType, String expectedType) {
+	private void checkDocumentType(final DocumentType documentType, final Document document) {
+		if(documentType != null) {
+			LOG.debug("Check properties for DocumentType: {}", document.getType());
+			checkTypes(document.getStringProperties(), documentType, "string");
+			checkTypes(document.getLongProperties(), documentType, "long");
+			checkTypes(document.getDoubleProperties(), documentType, "double");
+			checkTypes(document.getDateProperties(), documentType, "date");
+		} else {
+			throw new RuntimeException("DocumentType not exists: " + document.getType());
+		}
+	}
+	private void checkTypes(final Map<String, ?> properties, final DocumentType documentType, final String expectedType) {
 		if(properties != null) {
 			properties.keySet().forEach(propname -> {
 				String type = documentType.getPropertyDefinitions().get(propname);
@@ -77,10 +71,10 @@ public class DocumentSavingService {
 		}
 	}
 
-	private void setDefaultsAndDoVersioning(Document document, Versioning versioning) {
+	private Document getSaveableDocument(final Document document, final Versioning versioning) {
+		// TODO: new document
 		Date now = new Date();
 		document.setIsCheckedOut(false);
-
 		if(Versioning.NEW.equals(versioning)) {
 			document.setDocumentId((document.getDocumentId() == null)
 					? UUID.randomUUID().toString() : document.getDocumentId());
@@ -99,5 +93,6 @@ public class DocumentSavingService {
 			Assert.notNull(document.getVersionSeriesId(), "VersionSeriesId must not be null!");
 			document.setLastModificationDate(now);
 		}
+		return document;
 	}
 }
