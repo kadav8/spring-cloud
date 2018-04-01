@@ -1,0 +1,13 @@
+server:
+    port: 2222
+spring:
+    application.name: eureka
+    cloud:
+        config:
+            uri: http://localhost:1111
+            fail-fast: true
+            password: 12345
+eureka:
+    client:
+        registerWithEureka: false
+        fetchRegistry: false

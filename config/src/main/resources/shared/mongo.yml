@@ -1,0 +1,1 @@
+spring.data.mongodb.uri: mongodb://kadav8:${MONGO_MLAB_PASSWORD}@ds227939.mlab.com:27939/mongo

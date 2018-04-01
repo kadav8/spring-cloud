@@ -1,0 +1,8 @@
+logging.level:
+    com.example: debug
+eureka.client.enabled: false
+spring:
+    cloud.config.enabled: false
+    data:
+        mongodb.uri: mongodb://kadav8:${MONGO_MLAB_PASSWORD}@ds227939.mlab.com:27939/mongo
+        #mongodb.uri: mongodb+srv://kadav8:${MONGO_ATLAS_PASSWORD}@cluster0-yzi3j.mongodb.net/test

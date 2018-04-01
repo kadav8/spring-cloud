@@ -1,0 +1,6 @@
+logging.level:
+    com.example: debug
+eureka:
+    client:
+        enabled: true
+        serviceUrl.defaultZone: http://localhost:2222/eureka/
