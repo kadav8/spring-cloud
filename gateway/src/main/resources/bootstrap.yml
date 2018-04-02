@@ -1,10 +1,11 @@
-server:
-    port: 8080
 spring:
     application.name: gateway
     cloud:
         config:
-            uri: http://localhost:1111
-            fail-fast: true
             password: 12345
+            discovery.enabled: true
         gateway.discovery.locator.enabled: true
+eureka:
+    client:
+        enabled: true
+        serviceUrl.defaultZone: http://localhost:1111/eureka/
