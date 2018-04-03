@@ -3,4 +3,19 @@ server:
 logging.level:
     com.example: debug
 spring:
-    cloud.stream.bindings.output.destination: documents
+  cloud.stream:
+    bindings:
+      output:
+        destination: documents
+        binder: rabbit1
+        durableSubscription: true
+    binders:
+      rabbit1:
+        type: rabbit
+        environment:
+          spring:
+            rabbitmq:
+              host: sheep.rmq.cloudamqp.com
+              username: ${RABBIT_USERNAME}
+              password: ${RABBIT_PASSWORD}
+              virtual-host: ${RABBIT_USERNAME}
