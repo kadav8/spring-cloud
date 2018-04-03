@@ -21,6 +21,7 @@ public class DocumentEndpoint {
 
 	@Autowired
 	private DocumentRepository documentRepo;
+
 	@Autowired
 	private DocumentSavingService documentSavingService;
 

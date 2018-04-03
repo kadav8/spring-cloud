@@ -8,7 +8,6 @@ spring:
       output:
         destination: documents
         binder: rabbit1
-        durableSubscription: true
     binders:
       rabbit1:
         type: rabbit
