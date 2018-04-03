@@ -1,4 +1,0 @@
-server:
-    port: 1111
-logging.level:
-    com.example: debug

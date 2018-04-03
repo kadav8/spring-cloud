@@ -4,3 +4,7 @@ logging.level:
     com.example: debug
 spring:
     data.mongodb.uri: mongodb://kadav8:${MONGO_MLAB_PASSWORD}@ds227939.mlab.com:27939/mongo
+    cloud.stream.bindings.input:
+        destination: documents # define the destination to which the input MessageChannel should be bound
+        group: documents-group # ensures 1 node in a group gets message (point-to-point, not a broadcast)
+        durableSubscription: true # ensure that the Q is durable

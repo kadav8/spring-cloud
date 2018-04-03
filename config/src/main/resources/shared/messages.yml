@@ -1,0 +1,6 @@
+server:
+    port: 8082
+logging.level:
+    com.example: debug
+spring:
+    cloud.stream.bindings.output.destination: documents

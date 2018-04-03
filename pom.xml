@@ -17,8 +17,9 @@
 	<modules>
 		<module>config</module>
 		<module>eureka</module>
-		<module>mongo</module>
 		<module>gateway</module>
+		<module>mongo</module>
+		<module>messages</module>
 	</modules>
 
 	<properties>
