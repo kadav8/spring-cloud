@@ -29,17 +29,11 @@ public class DocumentSavingService {
 		this.documentTypeRepository = documentTypeRepository;
 	}
 
-	public Mono<Document> storeDocument(final Document document) {
-		return saveDocument(document, Versioning.NEW);
-	}
-	public Mono<Document> updateDocument(final Document document) {
-		return saveDocument(document, Versioning.UPDATE);
-	}
-	public Mono<Document> updateSameDocument(final Document document) {
-		return saveDocument(document, Versioning.SAME);
+	public Mono<Document> saveDocument(final DocumentMessage documentMessage) {
+		return saveDocument(documentMessage.getDocument(), documentMessage.getVersioning());
 	}
 
-	private Mono<Document> saveDocument(final Document document, final Versioning versioning) {
+	public Mono<Document> saveDocument(final Document document, final Versioning versioning) {
 		LOG.debug("Save: {}", document);
 		return documentTypeRepository
 				.findById(document.getType())
@@ -74,7 +68,6 @@ public class DocumentSavingService {
 	private Document getSaveableDocument(final Document document, final Versioning versioning) {
 		// TODO: new document
 		Date now = new Date();
-		document.setIsCheckedOut(false);
 		if(Versioning.NEW.equals(versioning)) {
 			document.setDocumentId((document.getDocumentId() == null)
 					? UUID.randomUUID().toString() : document.getDocumentId());

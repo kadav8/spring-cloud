@@ -8,7 +8,6 @@ public class Document {
 	private String documentId;
 	private String versionSeriesId;
 	private Long version;
-	private Boolean isCheckedOut;
 	private String type;
 	private Date creationDate;
 	private String creatorName;
@@ -37,12 +36,6 @@ public class Document {
 	}
 	public void setVersion(Long version) {
 		this.version = version;
-	}
-	public Boolean getIsCheckedOut() {
-		return isCheckedOut;
-	}
-	public void setIsCheckedOut(Boolean isCheckedOut) {
-		this.isCheckedOut = isCheckedOut;
 	}
 	public String getType() {
 		return type;

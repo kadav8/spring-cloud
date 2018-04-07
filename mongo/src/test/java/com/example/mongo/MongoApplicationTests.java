@@ -9,30 +9,32 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.mongo.domain.Document;
 import com.example.mongo.domain.DocumentType;
+import com.example.mongo.domain.Versioning;
 import com.example.mongo.repository.DocumentRepository;
 import com.example.mongo.repository.DocumentTypeRepository;
 import com.example.mongo.service.DocumentSavingService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class MongoApplicationTests {
 
-	private boolean cleaningAllBefore = true;
+	boolean cleaningAllBefore = true;
 
 	@Autowired
-	private DocumentRepository documentRepository;
+	DocumentRepository documentRepository;
 	@Autowired
-	private DocumentTypeRepository documentTypeRepository;
-	@Autowired
-	private DocumentSavingService documentSavingService;
+	DocumentTypeRepository documentTypeRepository;
 
 	@Test
-	public void saveDocuments() {
+	public void testSaving() {
+		DocumentSavingService documentSavingService = new DocumentSavingService(documentRepository, documentTypeRepository);
+
 		if(cleaningAllBefore) {
 			documentRepository.deleteAll().block();
 		}
@@ -57,7 +59,7 @@ public class MongoApplicationTests {
 			Map<String, String> sp = new HashMap<>();
 			sp.put("ClientNumber", "eper" + i);
 			document.setStringProperties(sp);
-			documentSavingService.storeDocument(document).block();
+			documentSavingService.saveDocument(document, Versioning.NEW).block();
 			assertNotNull(documentRepository.findById(id).block());
 		}
 
@@ -72,7 +74,7 @@ public class MongoApplicationTests {
 			Map<String, String> sp = new HashMap<>();
 			sp.put("ClientNumber", "barack" + i);
 			document.setStringProperties(sp);
-			documentSavingService.storeDocument(document).block();
+			documentSavingService.saveDocument(document, Versioning.NEW).block();
 			assertNotNull(documentRepository.findById(id).block());
 		}
 
@@ -87,7 +89,7 @@ public class MongoApplicationTests {
 			Map<String, String> sp = new HashMap<>();
 			sp.put("ClientNumber", "alma" + i);
 			document.setStringProperties(sp);
-			documentSavingService.storeDocument(document).block();
+			documentSavingService.saveDocument(document, Versioning.NEW).block();
 			assertNotNull(documentRepository.findById(id).block());
 		}
 

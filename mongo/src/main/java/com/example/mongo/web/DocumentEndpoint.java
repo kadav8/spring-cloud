@@ -1,6 +1,5 @@
 package com.example.mongo.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.mongo.domain.Document;
+import com.example.mongo.domain.Versioning;
 import com.example.mongo.repository.DocumentRepository;
 import com.example.mongo.service.DocumentSavingService;
 
@@ -19,11 +19,13 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/documents")
 public class DocumentEndpoint {
 
-	@Autowired
-	private DocumentRepository documentRepo;
+	private final DocumentRepository documentRepo;
+	private final DocumentSavingService documentSavingService;
 
-	@Autowired
-	private DocumentSavingService documentSavingService;
+	public DocumentEndpoint(DocumentRepository documentRepo, DocumentSavingService documentSavingService) {
+		this.documentRepo = documentRepo;
+		this.documentSavingService = documentSavingService;
+	}
 
 	@GetMapping
 	public Flux<Document> getDocuments() {
@@ -47,17 +49,17 @@ public class DocumentEndpoint {
 
 	@PostMapping("/store")
 	public Mono<Document> storeDocument(@RequestBody Document document) {
-		return documentSavingService.storeDocument(document);
+		return documentSavingService.saveDocument(document, Versioning.NEW);
 	}
 
 	@PostMapping("/update")
 	public Mono<Document> updateDocument(@RequestBody Document document) {
-		return documentSavingService.updateDocument(document);
+		return documentSavingService.saveDocument(document, Versioning.UPDATE);
 	}
 
-	@PostMapping("/update/same")
+	@PostMapping("/sameUpdate")
 	public Mono<Document> updateSameDocument(@RequestBody Document document) {
-		return documentSavingService.updateSameDocument(document);
+		return documentSavingService.saveDocument(document, Versioning.SAME);
 	}
 
 	@GetMapping("/delete/{documentId}")
