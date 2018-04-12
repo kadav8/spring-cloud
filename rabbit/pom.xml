@@ -9,9 +9,9 @@
 		<version>1.0</version>
 	</parent>
 
-	<artifactId>messages</artifactId>
+	<artifactId>rabbit</artifactId>
 	<packaging>jar</packaging>
-	<name>messages</name>
+	<name>rabbit</name>
 
 	<dependencies>
 		<dependency>
