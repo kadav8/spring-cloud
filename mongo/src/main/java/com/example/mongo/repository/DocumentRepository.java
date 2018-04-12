@@ -9,6 +9,8 @@ import reactor.core.publisher.Mono;
 
 public interface DocumentRepository extends ReactiveCrudRepository<Document, String> {
 
+	public Flux<Document> findByVersionSeriesId(String versionSeriesId);
+
 	public Flux<Document> findByVersionSeriesIdOrderByCreationDate(String versionSeriesId);
 
 	public Mono<Void> deleteByVersionSeriesId(String versionSeriesId);

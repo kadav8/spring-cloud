@@ -24,6 +24,23 @@ public class Document {
 	private Map<String, Double> doubleProperties;
 	private Map<String, Date> dateProperties;
 
+	public Document() {}
+
+	public Document(Document document) {
+		this.documentId = document.getDocumentId();
+		this.versionSeriesId = document.getVersionSeriesId();
+		this.version = document.getVersion();
+		this.type = document.getType();
+		this.creationDate = document.getCreationDate();
+		this.creatorName = document.getCreatorName();
+		this.lastModificationDate = document.getLastModificationDate();
+		this.modifierName = document.getModifierName();
+		this.stringProperties = document.getStringProperties();
+		this.longProperties = document.getLongProperties();
+		this.doubleProperties = document.getDoubleProperties();
+		this.dateProperties = document.getDateProperties();
+	}
+
 	public String getDocumentId() {
 		return documentId;
 	}

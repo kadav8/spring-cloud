@@ -37,10 +37,16 @@ public class DocumentSavingService {
 		LOG.debug("Save: {}", document);
 		return documentTypeRepository
 				.findById(document.getType())
-				.doOnError(t -> LOG.error("Save document failed", t))
 				.doOnSuccess(documentType -> checkDocumentType(documentType, document))
-				.map(documentType -> getSaveableDocument(document, versioning))
-				.flatMap(saveableDocument -> documentRepository.save(saveableDocument));
+				.flatMap(documentType -> getVersionSeriesIdCount(document))
+				.map(vsidCount -> getSaveableDocument(vsidCount, document, versioning))
+				.flatMap(saveableDocument -> documentRepository.save(saveableDocument))
+				.onErrorMap(e -> {
+					if(e.toString().contains("DuplicateKeyException")) {
+						throw new RuntimeException("DocumentId already exists: " + document.getDocumentId());
+					}
+					return e;
+				});
 	}
 
 	private void checkDocumentType(final DocumentType documentType, final Document document) {
@@ -65,27 +71,50 @@ public class DocumentSavingService {
 		}
 	}
 
-	private Document getSaveableDocument(final Document document, final Versioning versioning) {
-		// TODO: new document
+	private Mono<Long> getVersionSeriesIdCount(final Document document) {
+		if(document.getVersionSeriesId() != null) {
+			LOG.debug("Count verisonSeriesId: {}", document.getVersionSeriesId());
+			return documentRepository
+					.findByVersionSeriesId(document.getVersionSeriesId())
+					.count();
+		}
+		return Mono.just(0L);
+	}
+
+	private Document getSaveableDocument(final Long vsidcount, final Document document, final Versioning versioning) {
+		checkVersionSeriesIdCount(vsidcount, document, versioning);
+		Document newDocument = new Document(document);
 		Date now = new Date();
 		if(Versioning.NEW.equals(versioning)) {
-			document.setDocumentId((document.getDocumentId() == null)
+			newDocument.setDocumentId((document.getDocumentId() == null)
 					? UUID.randomUUID().toString() : document.getDocumentId());
-			document.setVersionSeriesId((document.getVersionSeriesId() == null)
+			newDocument.setVersionSeriesId((document.getVersionSeriesId() == null)
 					? UUID.randomUUID().toString() : document.getVersionSeriesId());
-			document.setCreationDate(now);
+			newDocument.setCreationDate(now);
+			newDocument.setVersion(null);
 		}
 		else if (Versioning.UPDATE.equals(versioning)) {
 			Assert.notNull(document.getVersionSeriesId(), "VersionSeriesId must not be null!");
-			document.setDocumentId((document.getDocumentId() == null)
+			newDocument.setDocumentId((document.getDocumentId() == null)
 					? UUID.randomUUID().toString() : document.getDocumentId());
-			document.setCreationDate(now);
+			newDocument.setCreationDate(now);
+			newDocument.setVersion(null);
 		}
 		else if (Versioning.SAME.equals(versioning)) {
 			Assert.notNull(document.getDocumentId(), "DocumentId must not be null!");
 			Assert.notNull(document.getVersionSeriesId(), "VersionSeriesId must not be null!");
-			document.setLastModificationDate(now);
+			newDocument.setLastModificationDate(now);
 		}
-		return document;
+		return newDocument;
+	}
+
+	private void checkVersionSeriesIdCount(final Long vsidcount, final Document document, final Versioning versioning) {
+		boolean isAlreadyExists = vsidcount > 0;
+		if(isAlreadyExists && Versioning.NEW.equals(versioning)) {
+			throw new RuntimeException("VersionSeriesId already exists: " + document.getVersionSeriesId());
+		}
+		if(!isAlreadyExists && ( Versioning.UPDATE.equals(versioning) || Versioning.SAME.equals(versioning) )) {
+			throw new RuntimeException("VersionSeriesId not exists: " + document.getVersionSeriesId());
+		}
 	}
 }
