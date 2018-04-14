@@ -1,0 +1,28 @@
+@import "./colors.scss";
+
+$header-height: 55px;
+
+.i-simple-container {
+  width: 100%;
+  height: 100%;
+}
+
+.i-container {
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+}
+
+.i-header {
+  width: 100%;
+  height: $header-height;
+  top: 0;
+  position: fixed;
+  overflow: hidden;
+}
+
+.i-main-content {
+  width: 100%;
+  height: 100%;
+  padding-top: $header-height;
+}
