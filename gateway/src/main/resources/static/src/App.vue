@@ -4,14 +4,16 @@
     <div class="i-main-content">
       <router-view></router-view>
     </div>
+    <chat></chat>
   </div>
 </template>
 
 <script>
 import headerbar from "./components/Headerbar.vue";
+import chat from "./components/Chat.vue";
 
 export default {
-  components: { headerbar },
+  components: { headerbar, chat },
 };
 </script>
 
