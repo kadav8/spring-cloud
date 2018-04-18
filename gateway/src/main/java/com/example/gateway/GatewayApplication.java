@@ -14,6 +14,8 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+import com.example.EnvSetter;
+
 import reactor.core.publisher.Mono;
 
 @SpringBootApplication
@@ -21,6 +23,7 @@ import reactor.core.publisher.Mono;
 public class GatewayApplication {
 
 	public static void main(String[] args) {
+		EnvSetter.setEnvProperties();
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 
@@ -33,12 +36,12 @@ public class GatewayApplication {
 
 @RestController
 class GatewayController {
-	@Value("${chat.enabled:false}")
-	private boolean isChatEnabled;
+	@Value("${notifications.enabled:false}")
+	private boolean isNotificationsEnabled;
 
-	@GetMapping("/chatEnabled")
-	public boolean isChatEnabled() {
-		return isChatEnabled;
+	@GetMapping("/notificationsEnabled")
+	public boolean isEnabled() {
+		return isNotificationsEnabled;
 	}
 }
 

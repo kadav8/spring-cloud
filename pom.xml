@@ -15,12 +15,12 @@
 	</parent>
 
 	<modules>
+		<module>common</module>
 		<module>config</module>
 		<module>eureka</module>
 		<module>gateway</module>
 		<module>mongo</module>
-		<module>rabbit</module>
-		<module>chat</module>
+		<module>notifications</module>
 	</modules>
 
 	<properties>
@@ -34,6 +34,11 @@
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.example</groupId>
+			<artifactId>common</artifactId>
+			<version>1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
