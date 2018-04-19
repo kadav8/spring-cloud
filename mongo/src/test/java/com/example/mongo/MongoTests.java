@@ -1,5 +1,6 @@
 package com.example.mongo;
 
+import static com.example.EnvironmentSetter.setEnvProperties;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -15,9 +16,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import com.example.EnvSetter;
+import org.springframework.test.context.junit4.SpringRunner;;
 
 @RunWith(SpringRunner.class)
 @DataMongoTest//(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
@@ -34,7 +33,7 @@ public class MongoTests {
 
 	@BeforeClass
 	public static void init() {
-		EnvSetter.setEnvProperties();
+		setEnvProperties();
 	}
 
 	@Before

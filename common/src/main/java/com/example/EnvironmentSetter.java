@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class EnvSetter {
+public class EnvironmentSetter {
 
 	public static void setEnvProperties() {
 		if (new File("../.env").exists()) {

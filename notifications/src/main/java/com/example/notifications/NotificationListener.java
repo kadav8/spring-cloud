@@ -33,7 +33,6 @@ class NotificationMessage {
 	private String type;
 
 	public NotificationMessage() {}
-
 	public NotificationMessage(String appname, String text, String type) {
 		this.appname = appname;
 		this.text = text;
@@ -52,7 +51,6 @@ class NotificationMessage {
 	public void setText(String text) {
 		this.text = text;
 	}
-
 	public String getType() {
 		return type;
 	}

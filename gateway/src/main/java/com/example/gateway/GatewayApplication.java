@@ -1,5 +1,7 @@
 package com.example.gateway;
 
+import static com.example.EnvironmentSetter.setEnvProperties;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,8 +16,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
-import com.example.EnvSetter;
-
 import reactor.core.publisher.Mono;
 
 @SpringBootApplication
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 public class GatewayApplication {
 
 	public static void main(String[] args) {
-		EnvSetter.setEnvProperties();
+		setEnvProperties();
 		SpringApplication.run(GatewayApplication.class, args);
 	}
 
