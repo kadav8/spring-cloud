@@ -49,6 +49,7 @@ class GatewayController {
 
 @Component
 class CustomWebFilter implements WebFilter {
+
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
     if (exchange.getRequest().getURI().getPath().equals("/")) {

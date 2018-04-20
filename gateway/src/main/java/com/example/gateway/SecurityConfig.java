@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.header.XFrameOptionsServerHttpHeadersWriter.Mode;
 import org.springframework.stereotype.Component;
 
 import reactor.core.publisher.Mono;
@@ -26,16 +27,19 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 	@Bean
 	public SecurityWebFilterChain securitygWebFilterChain(ServerHttpSecurity http) {
-	    return http.authorizeExchange()
-	      .anyExchange().authenticated()
-	      .and().formLogin()
-	      .and().build();
+	    return http
+	    		.authorizeExchange()
+	    		.anyExchange().authenticated()
+	    		.and().formLogin()
+	    		.and().csrf().disable() // TODO: nem szabad kikapcsolni!
+	    		.headers().frameOptions().mode(Mode.SAMEORIGIN).and()
+	    		.and().build();
 	}
 
-	 @Bean
-	 public BCryptPasswordEncoder passwordEncoder() {
-		 return new BCryptPasswordEncoder();
-	 }
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }
 
 @Component
