@@ -10,6 +10,26 @@ after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
 
   # CONFIG SERVICE
-  - export CONFIG=kadav8/spring-cloud-config
+  - export CONFIG=kadav8/spring-cloud-demo-config
   - docker build -t $CONFIG ./config
+  - docker push $CONFIG
+  
+  # EUREKA SERVICE
+  - export CONFIG=kadav8/spring-cloud-demo-eureka
+  - docker build -t $CONFIG ./eureka
+  - docker push $CONFIG
+
+  # GATEWAY SERVICE
+  - export CONFIG=kadav8/spring-cloud-demo-gateway
+  - docker build -t $CONFIG ./gateway
+  - docker push $CONFIG
+  
+  # MONGO SERVICE
+  - export CONFIG=kadav8/spring-cloud-demo-mongo
+  - docker build -t $CONFIG ./mongo
+  - docker push $CONFIG
+  
+  # NOTIFICATIONS SERVICE
+  - export CONFIG=kadav8/spring-cloud-demo-notifications
+  - docker build -t $CONFIG ./notifications
   - docker push $CONFIG
