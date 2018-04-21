@@ -1,2 +1,15 @@
+sudo: required
+
+services:
+  - docker
+
 language: java
 jdk: oraclejdk8
+
+after_success:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+  # CONFIG SERVICE
+  - export CONFIG=kadav8/spring-cloud-config
+  - docker build -t $CONFIG ./config
+  - docker push $CONFIG
