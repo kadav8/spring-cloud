@@ -8,10 +8,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.discovery.DiscoveryClientRouteDefinitionLocator;
+import org.springframework.cloud.gateway.route.RouteLocator;
+import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -28,31 +34,54 @@ public class GatewayApplication {
 	}
 
 	@Bean
+	@Profile("eureka")
     public DiscoveryClientRouteDefinitionLocator
       discoveryClientRouteLocator(DiscoveryClient discoveryClient) {
         return new DiscoveryClientRouteDefinitionLocator(discoveryClient);
     }
+
+	@Bean
+	@Profile("!eureka")
+	public RouteLocator customRouteLocator(RouteLocatorBuilder builder, Environment env) {
+		RouteLocatorBuilder.Builder b = builder.routes();
+		if(StringUtils.hasText(env.getProperty("gateway.routes"))) {
+			for(String ro : env.getProperty("gateway.routes").split(",")) {
+				String url = env.getProperty("gateway.routes." + ro);
+				if(StringUtils.hasText(url)) {
+					b.route(r -> r
+							.path("/" + ro + "/**")
+							.filters(f -> f.rewritePath("/" + ro + "/(?<remaining>.*)", "/${remaining}"))
+							.uri((url.endsWith("/")) ? url.substring(0, url.length()-1) : url));
+				}
+			}
+		}
+		return b.build();
+	}
 }
 
 @RestController
 class GatewayController {
-	@Value("${notifications.enabled:false}")
+	@Value("${notifications.enabled:true}")
 	private boolean isNotificationsEnabled;
+	@Value("${gateway.routes.notifications:null}")
+	private String url;
+	private WebClient wc = null;
 
 	@GetMapping("/notificationsEnabled")
-	public boolean isEnabled() {
-		return isNotificationsEnabled;
+	public Mono<Boolean> isEnabled() {
+		if(isNotificationsEnabled && StringUtils.hasText(url)) {
+			wc = (wc == null) ? WebClient.create(url) : wc;
+			return wc.get().uri("/ping").exchange().flatMap(response -> Mono.just(true)).onErrorReturn(false);
+		}
+		return Mono.just(false);
 	}
 }
 
-// workaround:
-
 @Component
 class CustomWebFilter implements WebFilter {
-
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-    if (exchange.getRequest().getURI().getPath().equals("/")) {
+    if (exchange.getRequest().getURI().getPath().equals("/") || exchange.getRequest().getURI().getPath().equals("/index")) {
         return chain.filter(exchange.mutate().request(exchange.getRequest().mutate().path("/index.html").build()).build());
     }
     return chain.filter(exchange);

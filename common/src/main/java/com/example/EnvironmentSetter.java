@@ -13,7 +13,9 @@ public class EnvironmentSetter {
 				Properties prop = new Properties();
 				prop.load(input);
 				for (Object key : prop.keySet()) {
-					System.setProperty(key.toString(), prop.get(key).toString());
+					if(!key.toString().startsWith("#")) {
+						System.setProperty(key.toString(), prop.get(key).toString());
+					}
 				}
 			} catch (Throwable t) {
 			}
@@ -23,7 +25,9 @@ public class EnvironmentSetter {
 				Properties prop = new Properties();
 				prop.load(input);
 				for (Object key : prop.keySet()) {
-					System.setProperty(key.toString(), prop.get(key).toString());
+					if(!key.toString().startsWith("#")) {
+						System.setProperty(key.toString(), prop.get(key).toString());
+					}
 				}
 			} catch (Throwable t) {
 			}
