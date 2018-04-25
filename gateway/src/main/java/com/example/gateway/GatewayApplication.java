@@ -2,6 +2,8 @@ package com.example.gateway;
 
 import static com.example.EnvironmentSetter.setEnvProperties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +27,7 @@ import reactor.core.publisher.Mono;
 @SpringBootApplication
 @EnableDiscoveryClient
 public class GatewayApplication {
+	private static final Logger log = LoggerFactory.getLogger(GatewayApplication.class);
 
 	public static void main(String[] args) {
 		setEnvProperties();
@@ -38,6 +41,7 @@ public class GatewayApplication {
 		if(StringUtils.hasText(env.getProperty("gateway.routes"))) {
 			for(String ro : env.getProperty("gateway.routes").split(",")) {
 				String url = env.getProperty("gateway.routes." + ro);
+				log.info("set: " + url);
 				if(StringUtils.hasText(url)) {
 					b.route(r -> r
 							.path("/" + ro + "/**")
