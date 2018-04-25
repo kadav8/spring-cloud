@@ -31,14 +31,8 @@ public class GatewayApplication {
 	public static void main(String[] args) {
 		setEnvProperties();
 		SpringApplication.run(GatewayApplication.class, args);
+		// TODO: spring.cloud.gateway.discovery.locator.enabled=true
 	}
-
-	@Bean
-	@Profile("eureka")
-    public DiscoveryClientRouteDefinitionLocator
-      discoveryClientRouteLocator(DiscoveryClient discoveryClient) {
-        return new DiscoveryClientRouteDefinitionLocator(discoveryClient);
-    }
 
 	@Bean
 	@Profile("!eureka")
