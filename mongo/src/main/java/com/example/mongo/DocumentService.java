@@ -39,7 +39,6 @@ public class DocumentService {
 	public Mono<Document> updateDocument(final Document document) {
 		LOG.debug("Update: {}", document);
 		Assert.notNull(document.getDocumentId(), "DocumentId must not be null!");
-		Assert.notNull(document.getTitle(), "Title must not be null!");
 		Assert.notNull(document.getVersion(), "Version must not be null!");
 		return documentRepository
 				.findById(document.getDocumentId())

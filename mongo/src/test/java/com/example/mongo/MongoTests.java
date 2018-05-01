@@ -85,6 +85,7 @@ public class MongoTests {
 		String id = UUID.randomUUID().toString();
 		Document document = new Document();
 		document.setDocumentId(id);
+		document.setTitle("Title");
 		Map<String, String> sp = new HashMap<>();
 		sp.put("ClientNumber", clientNumber);
 		document.setProperties(sp);
@@ -98,7 +99,6 @@ public class MongoTests {
 		Document document = new Document();
 		document.setDocumentId(old.getDocumentId());
 		document.setVersion(old.getVersion());
-		document.setCreationDate(old.getCreationDate());
 		Map<String, String> sp = new HashMap<>();
 		sp.put("ClientNumber", clientNumber);
 		document.setProperties(sp);
