@@ -1,4 +1,4 @@
-package com.example.mongo;
+package com.example.sql;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,10 +9,8 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableBinding(NotificationSource.class)
-@EnableAsync
 public class RabbitNotificationSender implements NotificationSender {
 	private Logger LOG = LoggerFactory.getLogger(RabbitNotificationSender.class);
 
@@ -22,19 +20,19 @@ public class RabbitNotificationSender implements NotificationSender {
 	@Override
 	@Async
 	public void sendSaveSuccess(String id) {
-		sendSuccess("New document added to MongoDB: " + id);
+		sendSuccess("New document added to SQLDB: " + id);
 	}
 
 	@Override
 	@Async
 	public void sendUpdateSuccess(String id) {
-		sendSuccess("Document updated in MongoDB: " + id);
+		sendSuccess("Document updated in SQLDB: " + id);
 	}
 
 	private boolean sendSuccess(String text) {
 		LOG.info("Send notification");
 		NotificationMessage notmessage = new NotificationMessage();
-		notmessage.setAppname("Mongo");
+		notmessage.setAppname("Sql");
 		notmessage.setText(text);
 		notmessage.setType("success");
 		Message<NotificationMessage> message = MessageBuilder.withPayload(notmessage).build();

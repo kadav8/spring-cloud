@@ -1,22 +1,24 @@
-package com.example.mongo;
+package com.example.sql;
 
 import java.util.Date;
 import java.util.Map;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Version;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
 public class Document {
 
 	@Id
 	private String documentId;
 
-	@Version
 	private Long version;
-
 	private String title;
 	private Date creationDate;
 	private Date lastModificationDate;
+
+	@ElementCollection
 	private Map<String, String> properties;
 
 	public String getDocumentId() {
@@ -54,10 +56,5 @@ public class Document {
 	}
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
-	}
-
-	@Override
-	public String toString() {
-		return "Document [documentId=" + documentId + ", version=" + version + "]";
 	}
 }

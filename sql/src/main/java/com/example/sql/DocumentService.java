@@ -1,13 +1,13 @@
-package com.example.mongo;
+package com.example.sql;
 
 import java.util.Date;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import reactor.core.publisher.Mono;
 
 @Service
 public class DocumentService {
@@ -21,41 +21,33 @@ public class DocumentService {
 		this.notificationSender = notificationSender;
 	}
 
-	public Mono<Document> saveDocument(final Document document) {
+	@Transactional
+	public Document saveDocument(final Document document) {
 		LOG.debug("Save: {}", document);
 		Assert.notNull(document.getDocumentId(), "DocumentId must not be null!");
 		Assert.notNull(document.getTitle(), "Title must not be null!");
-		return documentRepository
-				.save(getSaveableDocument(document))
-				.onErrorMap(e -> {
-					if(e.toString().contains("DuplicateKeyException")) {
-						throw new RuntimeException("DocumentId already exists: " + document.getDocumentId());
-					}
-					return e;
-				})
-				.doOnSuccess(savedDocument -> notificationSender.sendSaveSuccess(savedDocument.getDocumentId()));
+		Assert.isTrue(!documentRepository.existsById(document.getDocumentId()), "Document already exists: " + document.getDocumentId());
+		Document savedDocument = documentRepository.save(getSaveableDocument(document));
+		notificationSender.sendSaveSuccess(savedDocument.getDocumentId());
+		return savedDocument;
 	}
 
-	public Mono<Document> updateDocument(final Document document) {
+	public Document updateDocument(final Document document) {
 		LOG.debug("Update: {}", document);
 		Assert.notNull(document.getDocumentId(), "DocumentId must not be null!");
 		Assert.notNull(document.getTitle(), "Title must not be null!");
 		Assert.notNull(document.getVersion(), "Version must not be null!");
-		return documentRepository
-				.findById(document.getDocumentId())
-				.defaultIfEmpty(new Document())
-				.flatMap(old -> {
-					if (old.getDocumentId() == null) {
-						throw new RuntimeException("Document does not exists: " + document.getDocumentId());
-					}
-					return documentRepository.save(getUpdateableDocument(document, old));
-				})
-				.doOnSuccess(updatedDocument -> notificationSender.sendUpdateSuccess(updatedDocument.getDocumentId()));
+		Optional<Document> old = documentRepository.findById(document.getDocumentId());
+		Assert.isTrue(old.isPresent(), "Document does not exists: " + document.getDocumentId());
+		Assert.isTrue(old.get().getVersion().equals(document.getVersion()), "Versions must be equal!");
+		Document updatedDocument = documentRepository.save(getUpdateableDocument(document, old.get()));
+		notificationSender.sendUpdateSuccess(updatedDocument.getDocumentId());
+		return updatedDocument;
 	}
 
 	private Document getSaveableDocument(final Document document) {
 		Date now = new Date();
-		document.setVersion(null);
+		document.setVersion(0L);
 		document.setCreationDate(now);
 		document.setLastModificationDate(now);
 		return document;
@@ -64,6 +56,7 @@ public class DocumentService {
 	private Document getUpdateableDocument(final Document document, final Document old) {
 		document.setCreationDate(old.getCreationDate());
 		document.setLastModificationDate(new Date());
+		document.setVersion(old.getVersion()+1);
 		return document;
 	}
 }

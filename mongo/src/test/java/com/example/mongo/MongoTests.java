@@ -28,7 +28,7 @@ public class MongoTests {
 
 	@Autowired
 	DocumentRepository documentRepository;
-	DocumentService documentSavingService;
+	DocumentService documentService;
 	List<String> toDelete = new ArrayList<>();
 
 	@BeforeClass
@@ -38,7 +38,7 @@ public class MongoTests {
 
 	@Before
 	public void setUp() {
-		documentSavingService = new DocumentService(documentRepository, new NotificationSender() {
+		documentService = new DocumentService(documentRepository, new NotificationSender() {
 			@Override
 			public void sendSaveSuccess(String id) {
 				assertNotNull(id);
@@ -70,15 +70,15 @@ public class MongoTests {
 
 	@Test
 	public void testSaving() {
-		save(documentSavingService, "eper");
-		save(documentSavingService, "barack");
+		save(documentService, "eper");
+		save(documentService, "barack");
 	}
 
 	@Test
 	public void testUpdate() {
-		Document d = save(documentSavingService, "alma");
-		Document d2 = update(documentSavingService, "alma2", d);
-		update(documentSavingService, "alma3", d2);
+		Document d = save(documentService, "alma");
+		Document d2 = update(documentService, "alma2", d);
+		update(documentService, "alma3", d2);
 	}
 
 	private Document save(DocumentService documentSavingService, String clientNumber) {
