@@ -12,3 +12,5 @@
 
 .env
 gateway/src/main/resources/static/npm-debug.log
+
+docker-compose-local*

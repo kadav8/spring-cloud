@@ -1,0 +1,59 @@
+version: '3.6'
+
+services:
+  config:
+    image: kadav8/spring-cloud-demo-config
+    restart: always
+    environment:
+      - MONGO_APP_URL=$MONGO_APP_URL
+      - SQL_APP_URL=$SQL_APP_URL
+      - NOTIFICATIONS_APP_URL=$NOTIFICATIONS_APP_URL
+    ports:
+      - 1111:1111
+
+  gateway:
+    image: kadav8/spring-cloud-demo-gateway
+    restart: always
+    environment:
+      - MONGO_APP_URL=$MONGO_APP_URL
+      - SQL_APP_URL=$SQL_APP_URL
+      - NOTIFICATIONS_APP_URL=$NOTIFICATIONS_APP_URL
+    depends_on:
+      - config
+    ports:
+      - 8080:8080
+      
+  mongo:
+    image: kadav8/spring-cloud-demo-mongo
+    restart: always
+    environment:
+      - MONGO_MLAB_PASSWORD=$MONGO_MLAB_PASSWORD
+      - MONGO_ATLAS_PASSWORD=$MONGO_ATLAS_PASSWORD
+      - RABBIT_USERNAME=$RABBIT_USERNAME
+      - RABBIT_PASSWORD=$RABBIT_PASSWORD
+    depends_on:
+      - config
+    ports:
+      - 8081:8081
+      
+  sql:
+    image: kadav8/spring-cloud-demo-sql
+    restart: always
+    environment:
+      - RABBIT_USERNAME=$RABBIT_USERNAME
+      - RABBIT_PASSWORD=$RABBIT_PASSWORD
+    depends_on:
+      - config
+    ports:
+      - 8082:8082
+
+  notifications:
+    image: kadav8/spring-cloud-demo-notifications
+    restart: always
+    environment:
+      - RABBIT_USERNAME=$RABBIT_USERNAME
+      - RABBIT_PASSWORD=$RABBIT_PASSWORD
+    depends_on:
+      - config
+    ports:
+      - 8083:8083
