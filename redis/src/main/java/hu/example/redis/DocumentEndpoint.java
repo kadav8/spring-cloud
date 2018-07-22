@@ -1,4 +1,4 @@
-package com.example.mongo;
+package hu.example.redis;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +44,6 @@ public class DocumentEndpoint {
 
 	@GetMapping("/delete/{documentId}")
 	public Mono<Void> deleteByDocumentId(@PathVariable String documentId) {
-		return documentRepo.deleteById(documentId);
+		return documentRepo.deleteById(documentId).flatMap(p -> Mono.<Void>empty());
 	}
 }

@@ -11,6 +11,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,7 @@ import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@ComponentScan("com.example")
 public class GatewayApplication {
 	private static final Logger log = LoggerFactory.getLogger(GatewayApplication.class);
 

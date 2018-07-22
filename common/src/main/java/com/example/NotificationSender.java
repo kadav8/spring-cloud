@@ -1,4 +1,4 @@
-package com.example.sql;
+package com.example;
 
 public interface NotificationSender {
 	public void sendSaveSuccess(String id);
