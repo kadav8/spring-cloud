@@ -9,6 +9,8 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Sink;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
+import com.example.NotificationMessage;
+
 import reactor.core.publisher.Flux;
 
 @EnableBinding(Sink.class)
@@ -24,42 +26,5 @@ public class NotificationListener {
 			log.info("Incoming notification: " + message);
 			messagingTemplate.convertAndSend("/topic/notifications", message);
 		});
-	}
-}
-
-class NotificationMessage {
-	private String appname;
-	private String text;
-	private String type;
-
-	public NotificationMessage() {}
-	public NotificationMessage(String appname, String text, String type) {
-		this.appname = appname;
-		this.text = text;
-		this.type = type;
-	}
-
-	public String getAppname() {
-		return appname;
-	}
-	public void setAppname(String appname) {
-		this.appname = appname;
-	}
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	@Override
-	public String toString() {
-		return "NotificationMessage [appname=" + appname + ", text=" + text + ", type=" + type + "]";
 	}
 }

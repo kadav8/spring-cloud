@@ -34,6 +34,7 @@ public class DocumentService {
 		return savedDocument;
 	}
 
+	@Transactional
 	public Document updateDocument(final Document document) {
 		LOG.debug("Update: {}", document);
 		Assert.notNull(document.getDocumentId(), "DocumentId must not be null!");

@@ -1,4 +1,4 @@
-package hu.example.redis;
+package com.example.mongo;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,12 +12,12 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/documents")
-public class DocumentEndpoint {
+public class DocumentEndpoints {
 
 	private final DocumentRepository documentRepo;
 	private final DocumentService documentSavingService;
 
-	public DocumentEndpoint(DocumentRepository documentRepo, DocumentService documentSavingService) {
+	public DocumentEndpoints(DocumentRepository documentRepo, DocumentService documentSavingService) {
 		this.documentRepo = documentRepo;
 		this.documentSavingService = documentSavingService;
 	}
@@ -44,6 +44,6 @@ public class DocumentEndpoint {
 
 	@GetMapping("/delete/{documentId}")
 	public Mono<Void> deleteByDocumentId(@PathVariable String documentId) {
-		return documentRepo.deleteById(documentId).flatMap(p -> Mono.<Void>empty());
+		return documentRepo.deleteById(documentId);
 	}
 }
