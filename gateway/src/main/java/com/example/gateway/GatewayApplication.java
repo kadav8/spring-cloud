@@ -43,8 +43,8 @@ public class GatewayApplication {
 		if(StringUtils.hasText(env.getProperty("gateway.routes"))) {
 			for(String ro : env.getProperty("gateway.routes").split(",")) {
 				String url = env.getProperty("gateway.routes." + ro);
-				log.info("set: " + url);
 				if(StringUtils.hasText(url)) {
+					log.info("Set application <{}> endpoints to: {}", ro, url);
 					b.route(r -> r
 							.path("/" + ro + "/**")
 							.filters(f -> f.rewritePath("/" + ro + "/(?<remaining>.*)", "/${remaining}"))

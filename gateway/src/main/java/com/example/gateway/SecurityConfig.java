@@ -33,7 +33,7 @@ public class SecurityConfig {
 	    		.and().formLogin()
 	    		.and().csrf().disable() // TODO: nem szabad kikapcsolni!
 	    		.headers().frameOptions().mode(Mode.SAMEORIGIN).and()
-	    		.and().build();
+	    		.build();
 	}
 
 	@Bean

@@ -19,7 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.example.NotificationSender;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @DataJpaTest
 public class SqlTests {
 

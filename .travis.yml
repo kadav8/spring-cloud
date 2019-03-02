@@ -4,7 +4,7 @@ services:
   - docker
 
 language: java
-jdk: oraclejdk10
+jdk: openjdk11
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
